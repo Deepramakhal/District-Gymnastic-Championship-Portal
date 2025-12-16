@@ -1,10 +1,7 @@
 import axios from "axios";
-import ngrokURL from "./ngrokURL";
-const BASE_URL = "http://localhost:8080/hdga/api";
-const BASE_URL_NGROK = `${ngrokURL}/hdga/api`;
 
 const apiAdmin = axios.create({
-  baseURL: BASE_URL_NGROK,
+  baseURL: `${import.meta.env.VITE_API_BASE}/hdga/api`,
   headers: {
     "Content-Type": "application/json",
     "ngrok-skip-browser-warning": "true",
