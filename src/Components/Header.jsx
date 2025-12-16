@@ -6,7 +6,7 @@ function Header() {
   const navigate = useNavigate();
 
   const handleLogoClick = () =>{
-    localStorage.removeItem("adminToken");
+    localStorage.removeItem("admin_token_secret21122025");
     navigate("/");
   }
   return (
