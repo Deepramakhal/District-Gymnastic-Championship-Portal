@@ -1,3 +1,3 @@
-const ngrokURL ="https://informational-linked-aye-stop.trycloudflare.com";
+const ngrokURL ="https://equation-pad-foreign-andrea.trycloudflare.com";
 
 export default ngrokURL;
