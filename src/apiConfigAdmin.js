@@ -14,7 +14,7 @@ const apiAdmin = axios.create({
 // ✅ Attach token dynamically
 apiAdmin.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("adminToken");
+    const token = localStorage.getItem("admin_token_secret21122025");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
