@@ -5,23 +5,33 @@ import ScoringPage from "./Components/ScoringPage.jsx";
 import ScoreSheet from "./ScoreSheet.jsx";
 import ConsolidatedResults from "./Components/ConsolidatedResults.jsx";
 import NotFound from "./Components/NotFound.jsx";
+import ProtectedRoute from "./Components/ProtectedRoute.jsx";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public routes */}
         <Route path="/" element={<HomePage />} />
-
-        <Route path="/admin" element={<AdminHome />} />
         <Route
-          path="/scoring/:ageGroup/:type"
-          element={<ScoringPage />}
+          path="/scoresheet/:ageGroup/:type/:apparatus"
+          element={<ScoreSheet />}
         />
-        <Route path="/scoresheet/:ageGroup/:type/:apparatus" element={<ScoreSheet />} />
         <Route
           path="/consolidated/:ageGroup/:type"
           element={<ConsolidatedResults />}
         />
+
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin" element={<AdminHome />} />
+          <Route
+            path="/scoring/:ageGroup/:type"
+            element={<ScoringPage />}
+          />
+        </Route>
+
+        {/* Catch-all */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

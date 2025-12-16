@@ -22,7 +22,7 @@ function AdminLoginForm({ onSuccess }) {
 
       // assuming backend sends { token: "JWT_TOKEN" }
       if (res.status === 200 && res.data.token) {
-        localStorage.setItem("adminToken", res.data.token);
+        localStorage.setItem("admin_token_secret21122025", res.data.token);
 
         if (onSuccess) onSuccess(); // close modal if needed
         navigate("/admin");
