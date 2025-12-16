@@ -1,3 +1,3 @@
-const ngrokURL ="https://picked-banners-constructed-ingredients.trycloudflare.com";
+const ngrokURL ="https://informational-linked-aye-stop.trycloudflare.com";
 
 export default ngrokURL;
