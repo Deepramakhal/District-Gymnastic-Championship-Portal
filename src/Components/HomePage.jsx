@@ -215,7 +215,7 @@ function HomePage() {
           <div className="bg-white rounded-2xl w-full max-w-lg p-5 relative">
             <button
               onClick={() => setSelectedPlayer(null)}
-              className="absolute top-2 right-3 text-gray-500"
+              className="absolute cursor-pointer top-2 right-3 text-gray-500"
             >
               ✕
             </button>
