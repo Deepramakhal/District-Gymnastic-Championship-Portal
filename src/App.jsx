@@ -5,7 +5,7 @@ import ScoringPage from "./Components/ScoringPage.jsx";
 import ScoreSheet from "./ScoreSheet.jsx";
 import ConsolidatedResults from "./Components/ConsolidatedResults.jsx";
 import NotFound from "./Components/NotFound.jsx";
-import ProtectedRoute from "./Components/ProtectedRoute.jsx";
+import ProtectedRoute from "./ProtectedRoute.js";
 
 const App = () => {
   return (
