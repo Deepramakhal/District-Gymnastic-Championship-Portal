@@ -6,6 +6,7 @@ import ScoreSheet from "./ScoreSheet.jsx";
 import ConsolidatedResults from "./Components/ConsolidatedResults.jsx";
 import NotFound from "./Components/NotFound.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
+import ConsolidatedSheet from "./Components/ConsolidatedSheet.jsx";
 
 const App = () => {
   return (
@@ -30,7 +31,7 @@ const App = () => {
             element={<ScoringPage />}
           />
         </Route>
-        <Route path="/consolidatedSheet/:ageGroup/:type" element={<ConsolidatedResults />} />
+        <Route path="/consolidatedSheet/:ageGroup/:type" element={<ConsolidatedSheet />} />
 
         {/* Catch-all */}
         <Route path="*" element={<NotFound />} />
