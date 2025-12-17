@@ -108,7 +108,7 @@ function ConsolidatedSheet() {
               {data.map((p, idx) => (
                 <tr key={idx}>
                   <Td>{idx + 1}</Td>
-                  <Td className="text-left">{p.name}</Td>
+                  <Td className="text-left">{p.playerName}</Td>
                   <Td>{p.clubName}</Td>
 
                   {columns.map((c) => (
