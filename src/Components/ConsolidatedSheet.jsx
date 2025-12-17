@@ -30,7 +30,7 @@ function ConsolidatedSheet() {
   /* ================= FETCH DATA ================= */
   useEffect(() => {
     api
-      .get(`/consolidated/${ageGroup}/${type}`)
+      .get(`/getConsolidated/${ageGroup}/${type}`)
       .then((res) => setData(res.data))
       .catch(() => alert("Failed to load consolidated result"));
   }, [ageGroup, type]);
