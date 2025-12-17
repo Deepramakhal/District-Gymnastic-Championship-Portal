@@ -30,7 +30,7 @@ const App = () => {
             element={<ScoringPage />}
           />
         </Route>
-        <Route path="/consolidated/:ageGroup/:type" element={<ConsolidatedResults />} />
+        <Route path="/consolidatedSheet/:ageGroup/:type" element={<ConsolidatedResults />} />
 
         {/* Catch-all */}
         <Route path="*" element={<NotFound />} />
