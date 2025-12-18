@@ -162,7 +162,7 @@ function ConsolidatedResults() {
                     )}
 
                     <td className="p-3 text-center font-bold">
-                      {Math.round(p.totalScore * 1000) / 1000}
+                      {p.totalScore.toFixed(3)}
                     </td>
                   </tr>
                 ))}

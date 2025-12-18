@@ -297,7 +297,7 @@ function ScoringPage() {
                         {score?.otherDeduction ?? "-"}
                       </td>
                       <td className="border px-3 py-2 font-bold text-blue-600">
-                        {score?.totalScore ?? "-"}
+                        {score?.totalScore.toFixed(3) ?? "-"}
                       </td>
                     </tr>
                   );
