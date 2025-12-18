@@ -45,15 +45,18 @@ function HomePage() {
 
   /* Search */
   useEffect(() => {
-    if (searchTerm.trim() === "") {
+    if (!searchTerm) {
       setFilteredPlayers([]);
       return;
     }
-    const filtered = allPlayers.filter((p) =>
+
+    const filtered = allPlayers.filter(p =>
       p.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
     setFilteredPlayers(filtered);
   }, [searchTerm, allPlayers]);
+
 
   /* Click outside */
   useEffect(() => {
@@ -115,7 +118,7 @@ function HomePage() {
             type="text"
             placeholder="Search gymnast by name..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {setSearchTerm(e.target.value); setFilteredPlayers([])}}
             className="w-full border border-gray-300 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500"
           />
         </div>
