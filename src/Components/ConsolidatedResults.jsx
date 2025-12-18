@@ -6,7 +6,7 @@ import Header from "./Header";
 
 const APPARATUS_BY_TYPE = {
   MAG: [
-    { label: "All Round", value: "" },
+    { label: "All around", value: "" },
     { label: "Floor Exercise", value: "Floor_Exercise" },
     { label: "Table Vault", value: "Table_Vault" },
     { label: "Pommel Horse", value: "Pommel_Horse" },
