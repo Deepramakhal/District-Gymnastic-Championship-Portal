@@ -1,140 +1,251 @@
 /* eslint-disable */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import api from "../apiConfig";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import Header from "./Header";
+import apiAdmin from "../apiConfigAdmin";
+import Logo from "../assets/logo.png";
 
-const MAG_COLUMNS = [
-  { label: "H/BAR", key: "horizontalBar" },
-  { label: "P/BAR", key: "parallelBars" },
-  { label: "P/HORSE", key: "pommelHorse" },
-  { label: "VAULT", key: "tableVault" },
-  { label: "FL.EX", key: "floorExercise" },
-  { label: "R/RING", key: "rings" },
-];
-
-const WAG_COLUMNS = [
-  { label: "BEAM", key: "balancingBeam" },
-  { label: "VAULT", key: "tableVault" },
-  { label: "FL.EX", key: "floorExercise" },
-  { label: "U/BAR", key: "unevenBars" },
-];
-
-function ConsolidatedSheet() {
+function ConsolidatedPrint() {
   const { ageGroup, type } = useParams();
-  const [data, setData] = useState([]);
-  const pdfRef = useRef(null);
+  const [rows, setRows] = useState([]);
 
-  /* ================= FETCH DATA ================= */
   useEffect(() => {
-    api
+    apiAdmin
       .get(`/getConsolidated/${ageGroup}/${type}`)
-      .then((res) => setData(res.data))
-      .catch(() => alert("Failed to load consolidated result"));
+      .then(res => setRows(res.data));
   }, [ageGroup, type]);
 
-  /* ================= PDF ================= */
-  const downloadPDF = async () => {
-    const canvas = await html2canvas(pdfRef.current, {
-      scale: 2,
-      useCORS: true,
-    });
+  // 12 rows per page (as per PDF)
+  const pages = [];
+  for (let i = 0; i < rows.length; i += 12) {
+    pages.push(rows.slice(i, i + 12));
+  }
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("landscape", "mm", "a4");
+  const genderLabel = type === "MAG" ? "MAG" : "WAG";
 
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  const MAG_HEADERS = [
+    "FLOOR",
+    "VAULT",
+    "P.HORSE",
+    "RINGS",
+    "P.BARS",
+    "H.BAR"
+  ];
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`Consolidated_${ageGroup}_${type}.pdf`);
-  };
-
-  const columns = type === "MAG" ? MAG_COLUMNS : WAG_COLUMNS;
+  const WAG_HEADERS = [
+    "VAULT",
+    "UNEVEN BAR",
+    "BALANCE BEAM",
+    "FLOOR"
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Header />
+    <>
+      <div className="no-print">
+        <button className="cursor-pointer" onClick={() => window.print()}>🖨 Print / Save PDF</button>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-xl font-bold">
-            Consolidated Score Sheet – {ageGroup} ({type})
-          </h1>
+      {pages.map((page, pageIndex) => (
+        <div className="page" key={pageIndex}>
 
-          <button
-            onClick={downloadPDF}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-          >
-            Download PDF
-          </button>
-        </div>
-
-        {/* ================= PDF CONTENT ================= */}
-        <div ref={pdfRef} className="bg-white p-6 border">
-
-          {/* TITLE */}
-          <div className="text-center mb-4">
-            <h2 className="font-bold text-lg">
-              HOWRAH DISTRICT GYMNASTIC ASSOCIATION
-            </h2>
-            <p className="text-sm">District Gymnastic Championship</p>
-            <p className="font-semibold underline mt-1">
-              CONSOLIDATED SCORE SHEET
-            </p>
-            <p className="mt-1">
-              Group – <b>{ageGroup}</b> &nbsp;&nbsp; {type}
-            </p>
+          {/* ================= HEADER ================= */}
+          <div className="header">
+            <img src={Logo} className="logo" alt="logo" />
+            <div className="header-text">
+              <div className="main-title">
+                HOWRAH DISTRICT GYMNASTIC ASSOCIATION
+              </div>
+              <div className="sub-title">
+                Regd. Under Societies Act XXVI of 1961 <br />
+                (Affiliated to West Bengal Gymnastic Association) <br />
+                OFFICE: 66, GOPAL BANERJEE LANE, HOWRAH – 711101
+              </div>
+              <div className="sheet-title">
+                CONSOLIDATED SCORE SHEET
+              </div>
+            </div>
           </div>
 
-          {/* TABLE */}
-          <table className="w-full border-collapse text-xs text-center">
+          {/* ================= META ================= */}
+          <div className="meta">
+            <div className="meta-left">
+              GROUP : <b>{ageGroup}</b>
+            </div>
+            <div className="meta-center">
+              {genderLabel}
+            </div>
+            <div className="meta-right">
+              {type}
+            </div>
+          </div>
+
+          {/* ================= TABLE ================= */}
+          <table className="cons-table">
             <thead>
               <tr>
-                <Th>SL</Th>
-                <Th>Name of Participant</Th>
-                <Th>Unit</Th>
-                {columns.map((c) => (
-                  <Th key={c.key}>{c.label}</Th>
+                <th>SL</th>
+                <th>NAME OF GYMNAST</th>
+                <th>UNIT</th>
+
+                {(type === "MAG" ? MAG_HEADERS : WAG_HEADERS).map(h => (
+                  <th key={h}>{h}</th>
                 ))}
-                <Th>TOTAL</Th>
-                <Th>RANK</Th>
+
+                <th>TOTAL</th>
+                <th>RANK</th>
               </tr>
             </thead>
 
             <tbody>
-              {data.map((p, idx) => (
-                <tr key={idx}>
-                  <Td>{idx + 1}</Td>
-                  <Td className="text-left">{p.playerName}</Td>
-                  <Td>{p.clubName}</Td>
+              {page.map((r, i) => (
+                <tr key={i}>
+                  <td>{pageIndex * 12 + i + 1}</td>
+                  <td className="name">{r.playerName}</td>
+                  <td>{r.clubName}</td>
 
-                  {columns.map((c) => (
-                    <Td key={c.key}>{p[c.key] ?? ""}</Td>
+                  {type === "MAG" && (
+                    <>
+                      <td>{r.floorExercise}</td>
+                      <td>{r.tableVault}</td>
+                      <td>{r.pommelHorse}</td>
+                      <td>{r.rings}</td>
+                      <td>{r.parallelBars}</td>
+                      <td>{r.horizontalBar}</td>
+                    </>
+                  )}
+
+                  {type === "WAG" && (
+                    <>
+                      <td>{r.tableVault}</td>
+                      <td>{r.unevenBars}</td>
+                      <td>{r.balancingBeam}</td>
+                      <td>{r.floorExercise}</td>
+                    </>
+                  )}
+                  <td className="bold">{r.totalScore.toFixed(3)}</td>
+                  <td className="bold">{r.rank}</td>
+                </tr>
+              ))}
+
+              {/* EMPTY ROWS */}
+              {Array.from({ length: 12 - page.length }).map((_, i) => (
+                <tr key={i}>
+                  {Array.from({
+                    length:
+                      (type === "MAG" ? 11 : 9)
+                  }).map((_, j) => (
+                    <td key={j}></td>
                   ))}
-
-                  <Td className="font-semibold">{p.totalScore}</Td>
-                  <Td className="font-bold">{p.rank}</Td>
                 </tr>
               ))}
             </tbody>
           </table>
+
+          {pageIndex < pages.length - 1 && (
+            <div className="page-break" />
+          )}
         </div>
-      </div>
-    </div>
+      ))}
+
+      {/* ================= PRINT STYLES ================= */}
+      <style>{`
+        @page {
+          size: A4 landscape;
+          margin: 12mm;
+        }
+
+        body {
+          font-family: "Times New Roman", serif;
+        }
+
+        .header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 6px;
+        }
+
+        .logo {
+          width: 85px;
+        }
+
+        .header-text {
+          flex: 1;
+          text-align: center;
+        }
+
+        .main-title {
+          font-size: 26px;
+          font-weight: bold;
+        }
+
+        .sub-title {
+          font-size: 14px;
+          line-height: 1.2;
+          margin-top: 2px;
+        }
+
+        .sheet-title {
+          font-size: 16px;
+          font-weight: bold;
+          text-decoration: underline;
+          margin-top: 6px;
+        }
+
+        .meta {
+          display: flex;
+          justify-content: space-between;
+          font-size: 16px;
+          margin: 10px 0;
+          font-weight: bold;
+        }
+
+        .cons-table {
+          width: 100%;
+          border-collapse: collapse;
+          table-layout: fixed;
+          font-size: 14px;
+        }
+
+        .cons-table th,
+        .cons-table td {
+          border: 1.8px solid black;
+          text-align: center;
+          padding: 4px;
+          height: 38px;
+        }
+
+        .name {
+          text-align: left;
+          padding-left: 8px;
+        }
+
+        .bold {
+          font-weight: bold;
+        }
+
+        /* COLUMN WIDTHS */
+        .cons-table th:nth-child(1) { width: 40px; }
+        .cons-table th:nth-child(2) { width: 260px; }
+        .cons-table th:nth-child(3) { width: 90px; }
+
+        .cons-table th:last-child { width: 70px; }
+        .cons-table th:nth-last-child(2) { width: 80px; }
+
+        .page-break {
+          page-break-after: always;
+        }
+
+        .no-print {
+          margin: 10px;
+        }
+
+        @media print {
+          .no-print {
+            display: none;
+          }
+        }
+      `}</style>
+    </>
   );
 }
 
-/* ================= REUSABLE ================= */
-
-const Th = ({ children }) => (
-  <th className="border px-2 py-1 font-semibold">{children}</th>
-);
-
-const Td = ({ children, className = "" }) => (
-  <td className={`border px-2 py-1 ${className}`}>{children}</td>
-);
-
-export default ConsolidatedSheet;
+export default ConsolidatedPrint;

@@ -12,6 +12,9 @@ function AdminHome() {
   const [editPlayerPopOpen, setEditPlayerPopOpen] = useState(false);
   const [clubPopOpen, setClubPopOpen] = useState(false);
   const [printPopOpen, setPrintPopOpen] = useState(false);
+  const [consolidatedSheetPopup, setConsolidatedSheetPopup] = useState(false);
+  const [ageGroupForConsolidated,setAgeGroupForConsolidated] = useState("");
+  const [ typeForConsolidated,setTypeForConsolidated] = useState("");
 
   const [playersList, setPlayersList] = useState([]);
   const [allPlayers, setAllPlayers] = useState([]);
@@ -145,6 +148,10 @@ function AdminHome() {
     navigate(`/scoresheet/${printForm.ageGroup}/${printForm.type}/${printForm.apparatus}`);
   };
 
+  const handleConsolidatedPrint = () =>{
+    navigate(`/consolidatedsheet/${ageGroupForConsolidated}/${typeForConsolidated}`);
+  }
+
   const navigateToScoringPage = (ageGroup, type) => {
     navigate(`/scoring/${ageGroup}/${type}`);
   };
@@ -164,6 +171,7 @@ function AdminHome() {
         <ActionCard title="Edit Player" icon="✏️" onClick={() => setEditPlayerPopOpen(true)} />
         <ActionCard title="Add / Remove Club" icon="🏫" onClick={() => setClubPopOpen(true)} />
         <ActionCard title="Print Chair of Jury Sheet" icon="🖨️" onClick={() => setPrintPopOpen(true)} />
+        <ActionCard title="Print consolidatedsheet" icon="🖨️" onClick={() => setConsolidatedSheetPopup(true)} />
 
         <ActionCard title="U6 Boys Scoring" icon="📊" onClick={() => navigateToScoringPage("U6", "MAG")} />
         <ActionCard title="U6 Girls Scoring" icon="📊" onClick={() => navigateToScoringPage("U6", "WAG")} />
@@ -306,6 +314,31 @@ function AdminHome() {
     )}
   </Modal>
 )}
+{
+  consolidatedSheetPopup && (
+    <Modal onClose={() => setConsolidatedSheetPopup(false)}>
+      <h2 className="modal-title">Consolidated Sheet Print</h2>
+      <select onChange={(e) => setAgeGroupForConsolidated(e.target.value)} value={ageGroupForConsolidated}>
+        <option value="" disabled>Select Age Group</option>
+        <option value="U6">U6</option>
+        <option value="U8">U8</option>
+        <option value="U10">U10</option>
+        <option value="U12">U12</option>
+        <option value="U14">U14</option>
+        <option value="U17">U17</option>
+        <option value="SENIOR">SENIOR</option>
+      </select>
+      <select onChange={(e)=>setTypeForConsolidated(e.target.value)} value={typeForConsolidated}>
+        <option value="">Select Type</option>
+        <option value="MAG">MAG</option>
+        <option value="WAG">WAG</option>
+      </select>
+      <button onClick={handleConsolidatedPrint} className="primary-btn">
+        🖨️ Print
+      </button>
+    </Modal>
+  )
+}
 {/* ================= EDIT MODAL ================= */}
 {editPlayerPopOpen && (
   <Modal onClose={() => { setEditPlayerPopOpen(false); setSelectedPlayer(null); }}>
