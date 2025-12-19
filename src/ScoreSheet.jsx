@@ -90,7 +90,7 @@ function ScoreSheet() {
               {pagePlayers.map((p, i) => (
                 <tr key={p.id}>
                   <td>{pageIndex * 8 + i + 1}</td>
-                  <td className="name">{p.name}</td>
+                  <td className="name font-2xl">{p.name}</td>
                   {/* remaining 15 cells */}
                   {Array.from({ length: 15 }).map((_, j) => (
                     <td key={j}></td>
@@ -147,7 +147,7 @@ function ScoreSheet() {
       <style>{`
         @page {
           size: A4 landscape;
-          margin: 10mm;
+          margin: 8mm;
         }
 
         body {
@@ -215,7 +215,7 @@ function ScoreSheet() {
 
         /* COLUMN WIDTHS */
         .score-table th:nth-child(1) { width: 40px; }
-        .score-table th:nth-child(2) { width: 240px; }
+        .score-table th:nth-child(2) { width: 210px; }
         .score-table th:nth-child(3) { width: 60px; }
         .score-table th:nth-child(4) { width: 65px; }
         .score-table th:nth-child(5) { width: 70px; }
@@ -223,19 +223,19 @@ function ScoreSheet() {
 
         /* E JURY (E1–E7) */
         .score-table th:nth-child(7)
-        .score-table th:nth-child(8),
-        .score-table th:nth-child(9),
-        .score-table th:nth-child(10),
-        .score-table th:nth-child(11),
-        .score-table th:nth-child(12),
+        .score-table th:nth-child(8)
+        .score-table th:nth-child(9)
+        .score-table th:nth-child(10)
+        .score-table th:nth-child(11)
+        .score-table th:nth-child(12)
         .score-table th:nth-child(13) {
           width: 70px;
         }
 
-        .score-table th:nth-child(14) { width: 60px; }
-        .score-table th:nth-child(15) { width: 60px; }
-        {/* .score-table th:nth-child(16) { width: 60px; }
-        .score-table th:nth-child(17) { width: 60px; } */}
+        .score-table th:nth-child(14) { width: 80px; }
+        .score-table th:nth-child(15) { width: 40px; }
+        .score-table th:nth-child(16) { width: 100px; }
+        .score-table th:nth-child(17) { width: 20px; } 
 
         .footer {
   display: grid;
