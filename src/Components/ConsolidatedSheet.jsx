@@ -93,11 +93,8 @@ function ConsolidatedPrint() {
             <div className="meta-left">
               GROUP : <b>{ageGroup}</b>
             </div>
-            <div className="meta-center">
+            <div className="meta-center mr-148">
               {genderLabel}
-            </div>
-            <div className="meta-right">
-              {type}
             </div>
           </div>
 
