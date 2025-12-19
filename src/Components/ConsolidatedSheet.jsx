@@ -9,10 +9,33 @@ function ConsolidatedPrint() {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    apiAdmin
-      .get(`/getConsolidated/${ageGroup}/${type}`)
-      .then(res => setRows(res.data));
-  }, [ageGroup, type]);
+  apiAdmin
+    .get(`/getConsolidated/${ageGroup}/${type}`)
+    .then(res => {
+      const data = res.data;
+      console.log(data);
+      // 🔹 Create sorted copy ONLY for ranking
+      const sortedByScore = [...data].sort(
+        (a, b) => b.totalScore - a.totalScore
+      );
+      
+      // 🔹 Build rank map (playerId → rank)
+      const rankMap = new Map();
+      sortedByScore.forEach((item, index) => {
+        rankMap.set(item.playerId, index + 1);
+      });
+
+      // 🔹 Attach computedRank WITHOUT reordering rows
+      const withFrontendRank = data.map(item => ({
+        ...item,
+        computedRank: rankMap.get(item.playerId),
+      }));
+
+      setRows(withFrontendRank);
+    });
+}, [ageGroup, type]);
+
+
 
   // 12 rows per page (as per PDF)
   const pages = [];
@@ -122,7 +145,7 @@ function ConsolidatedPrint() {
                     </>
                   )}
                   <td className="bold">{r.totalScore.toFixed(3)}</td>
-                  <td className="bold">{r.rank}</td>
+                  <td className="bold">{r.computedRank}</td>
                 </tr>
               ))}
 
