@@ -169,7 +169,7 @@ function AdminHome() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 max-w-6xl mx-auto">
         <ActionCard title="Add Players" icon="➕" onClick={() => setAddPlayerPopOpen(true)} />
         <ActionCard title="Edit Player" icon="✏️" onClick={() => setEditPlayerPopOpen(true)} />
-        <ActionCard title="Add / Remove Club" icon="🏫" onClick={() => setClubPopOpen(true)} />
+        <ActionCard title="Add / Remove Unit" icon="🏫" onClick={() => setClubPopOpen(true)} />
         <ActionCard title="Print Chair of Jury Sheet" icon="🖨️" onClick={() => setPrintPopOpen(true)} />
         <ActionCard title="Print consolidatedsheet" icon="🖨️" onClick={() => setConsolidatedSheetPopup(true)} />
 
@@ -192,23 +192,23 @@ function AdminHome() {
       {/* ================= CLUB MODAL ================= */}
       {clubPopOpen && (
         <Modal onClose={() => setClubPopOpen(false)}>
-          <h2 className="modal-title">Add / Remove Club</h2>
+          <h2 className="modal-title">Add / Remove Unit</h2>
 
           <Input
-            placeholder="Club Name"
+            placeholder="Unit Name"
             value={clubName}
             onChange={e => setClubName(e.target.value)}
           />
 
           {clubName && !clubExists && (
             <button onClick={addClub} className="success-btn">
-              ➕ Add Club
+              ➕ Add Unit
             </button>
           )}
 
           {clubName && clubExists && (
             <button onClick={removeClub} className="danger-btn">
-              ❌ Remove Club
+              ❌ Remove Unit
             </button>
           )}
         </Modal>

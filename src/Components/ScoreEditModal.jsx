@@ -33,6 +33,9 @@ function ScoreEditModal({
   onSuccess,
 }) {
   const [form, setForm] = useState(EMPTY_FORM);
+  const [globalValue, setGlobalValue] = useState("");
+const [useGlobal, setUseGlobal] = useState(false);
+
 
   /* ================= PREFILL ================= */
   useEffect(() => {
@@ -68,6 +71,25 @@ function ScoreEditModal({
       [key]: value,
     }));
   };
+  const handleGlobalSubmit = async () => {
+  if (!globalValue) {
+    alert("Enter global value");
+    return;
+  }
+
+  try {
+    await apiAdmin.post(
+      `score/globalValue/${player.id}/${Number(globalValue)}/${type}/${apparatus}`
+    );
+
+    onSuccess();
+    onClose();
+  } catch (err) {
+    console.error("Global value update failed:", err);
+    alert("Failed to apply global value");
+  }
+};
+
 
   /* ================= SUBMIT ================= */
   const handleSubmit = async () => {
@@ -151,6 +173,46 @@ function ScoreEditModal({
             </tbody>
           </table>
         </div>
+{/* ================= GLOBAL VALUE ================= */}
+<div className="mt-6 border-t pt-4">
+  <div className="flex items-center gap-3">
+    <input
+      type="text"
+      inputMode="decimal"
+      value={globalValue}
+      onChange={(e) => {
+        setGlobalValue(e.target.value);
+        setUseGlobal(true);
+      }}
+      placeholder="Enter global value"
+      className="
+        w-40
+        border
+        rounded-md
+        px-3
+        py-2
+        text-center
+        focus:outline-none
+        focus:ring-2
+        focus:ring-red-400
+      "
+    />
+
+    <button
+      onClick={handleGlobalSubmit}
+      className="
+        px-4
+        py-2
+        rounded-lg
+        bg-red-600
+        text-white
+        hover:bg-red-700
+      "
+    >
+      Apply Global Value
+    </button>
+  </div>
+</div>
 
         {/* ================= ACTIONS ================= */}
         <div className="mt-6 flex justify-end gap-3">

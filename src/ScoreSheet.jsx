@@ -34,12 +34,12 @@ function ScoreSheet() {
             <img src={Logo} className="logo" alt="logo" />
             <div className="header-text">
               <div className="font-bold font-['times-new-roman'] text-3xl">
-                HOWRAH DISTRICT GYMNASTIC ASSOCIATION
+                WEST BENGAL STATE GYMNASTIC CHAMPIONSHIP
               </div>
               <div className="font-['times-new-roman'] font-semibold text-xl">
-                Regd. Under Societies Act XXVI of 1961 <br />
-                (Affiliated to West Bengal Gymnastic Association) <br />
-                OFFICE: 66, GOPAL BANERJEE LANE, HOWRAH – 711101
+                {/* Regd. Under Societies Act XXVI of 1961 <br /> */}
+                (Affiliated to Gymnastic Federation of India) <br />
+                Raja Subodh Mullick Square Rd, Bowbazar, Kolkata, West Bengal 700013
               </div>
               <div className="sheet-title">
                 CHAIR OF JURY SCORE SHEET

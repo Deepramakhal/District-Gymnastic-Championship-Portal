@@ -98,7 +98,7 @@ function ConsolidatedResults() {
                 <tr>
                   <th className="p-3 text-left">Rank</th>
                   <th className="p-3 text-left">Player</th>
-                  <th className="p-3 text-left">Club</th>
+                  <th className="p-3 text-left">Unit</th>
 
                   {!selectedApparatus && (
                     <>

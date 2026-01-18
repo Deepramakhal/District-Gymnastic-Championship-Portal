@@ -75,12 +75,12 @@ function ConsolidatedPrint() {
             <img src={Logo} className="logo" alt="logo" />
             <div className="header-text">
               <div className="main-title">
-                HOWRAH DISTRICT GYMNASTIC ASSOCIATION
+                WEST BENGAL GYMNASTIC ASSOCIATION
               </div>
               <div className="sub-title">
-                Regd. Under Societies Act XXVI of 1961 <br />
-                (Affiliated to West Bengal Gymnastic Association) <br />
-                OFFICE: 66, GOPAL BANERJEE LANE, HOWRAH – 711101
+                {/* Regd. Under Societies Act XXVI of 1961 <br /> */}
+                (Affiliated to Gymnastic Federation of India) <br />
+                Raja Subodh Mullick Square Rd, Bowbazar, Kolkata, West Bengal 700013
               </div>
               <div className="sheet-title">
                 CONSOLIDATED SCORE SHEET

@@ -99,7 +99,7 @@ function HomePage() {
       {/* HERO */}
       <div className="bg-linear-to-b from-indigo-50 to-white py-6 px-4 text-center">
         <h1 className="text-xl sm:text-2xl font-serif font-bold text-gray-900">
-          District Championship Portal
+          Gymnastics Championship Portal
         </h1>
         <div className="mt-3 inline-flex items-center cursor-pointer gap-2 text-xs text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full"
         onClick={()=>window.location.reload()}>

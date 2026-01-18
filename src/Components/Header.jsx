@@ -38,19 +38,19 @@ function Header() {
         >
           {/* Main Line */}
           <h1 className="text-xl font-serif sm:text-lg md:text-xl font-bold text-gray-900">
-            Howrah District Gymnastic Association
+            West Bengal Gymnastic Association
           </h1>
-
+{/* 
           <p className="text-xs sm:text-sm text-gray-600">
             Registered Under Societies Act XXVI, 1961
+          </p> */}
+
+          <p className="text-xs sm:text-sm text-gray-600">
+            Affiliated to Gymnastic Federation of India
           </p>
 
           <p className="text-xs sm:text-sm text-gray-600">
-            Affiliated to West Bengal Gymnastic Association
-          </p>
-
-          <p className="text-xs sm:text-sm text-gray-600">
-            66, Gopal Banerjee Lane, Howrah - 711101
+            Raja Subodh Mullick Square Rd, Bowbazar, Kolkata, West Bengal 700013
           </p>
         </div>
 
