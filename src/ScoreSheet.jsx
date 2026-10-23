@@ -1,22 +1,54 @@
 /* eslint-disable */
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import apiAdmin from "./apiConfigAdmin";
 import Logo from "./assets/logo.png";
 
 function ScoreSheet() {
   const { ageGroup, type, apparatus } = useParams();
+  const [searchParams] = useSearchParams();
+  const isBlank = searchParams.get("blank") === "true";
+  const isScoresMode = searchParams.get("mode") === "scores";
+
   const [players, setPlayers] = useState([]);
 
+  const [scoreSheetData, setScoreSheetData] = useState([]);
+
   useEffect(() => {
+    if (isBlank || !ageGroup || !type || !apparatus) return;
+
+    apiAdmin
+      .post(`/score/getConsolidated/${ageGroup}/${type}/${apparatus}`)
+      .then((res) => setScoreSheetData(res.data || []))
+      .catch((err) => {
+        console.error("Failed to fetch consolidated scores:", err);
+        setScoreSheetData([]);
+      });
+  }, [isBlank, ageGroup, type, apparatus]);
+
+  useEffect(() => {
+    if (isBlank) {
+      setPlayers([]);
+      return;
+    }
+
     apiAdmin
       .get(`/getPlayersByAgeGroup/${ageGroup}/${type}`)
-      .then((res) => setPlayers(res.data));
-  }, [ageGroup, type]);
+      .then((res) => setPlayers(res.data))
+      .catch((err) => {
+        console.error("Failed to load players:", err);
+        setPlayers([]);
+      });
+  }, [ageGroup, type, isBlank]);
 
   const pages = [];
-  for (let i = 0; i < players.length; i += 8) {
-    pages.push(players.slice(i, i + 8));
+
+  if (isBlank) {
+    pages.push([]);
+  } else {
+    for (let i = 0; i < players.length; i += 8) {
+      pages.push(players.slice(i, i + 8));
+    }
   }
 
   const genderLabel = type === "MAG" ? "Boys" : "Girls";
@@ -34,7 +66,7 @@ function ScoreSheet() {
             <img src={Logo} className="logo" alt="logo" />
             <div className="header-text">
               <div className="font-bold font-['times-new-roman'] text-3xl">
-                  {import.meta.env.VITE_MAIN_HEAD}
+                {import.meta.env.VITE_MAIN_HEAD}
               </div>
               <div className="font-['times-new-roman'] font-semibold text-xl">
                 {/* Regd. Under Societies Act XXVI of 1961 <br /> */}
@@ -53,26 +85,32 @@ function ScoreSheet() {
               COMPETITION NO: I / IV ☐ &nbsp;&nbsp; II ☐ &nbsp;&nbsp; III ☐
             </div> */}
             <div className="ml-96"></div>
-            <div className="mr-56 text-xl font-semibold">{apparatus}</div>
-            <div className="mr-8 text-[16px] font-['Calibri']">
-              {genderLabel} – {ageGroup}
-            </div>
+            {!isBlank && (
+              <>
+                <div className="mr-56 text-xl font-semibold">
+                  {apparatus}
+                </div>
+                <div className="mr-8 text-[16px] font-['Calibri']">
+                  {genderLabel} – {ageGroup}
+                </div>
+              </>
+            )}
           </div>
 
           {/* TABLE */}
           <table className="score-table">
             <thead>
               <tr>
-                <th rowSpan="2">Sl.<br/>No</th>
+                <th rowSpan="2">Sl.<br />No</th>
                 <th rowSpan="2">Name of Gymnast</th>
-                <th rowSpan="2">D1/<br/>D2</th>
-                <th rowSpan="2">E Jury<br/>Out of</th>
-                <th rowSpan="2">Start<br/>Value</th>
+                <th rowSpan="2">D1/<br />D2</th>
+                <th rowSpan="2">E Jury<br />Out of</th>
+                <th rowSpan="2">Start<br />Value</th>
                 <th colSpan="7">E Jury</th>
-                <th rowSpan="2">Total<br/>Dedn.</th>
+                <th rowSpan="2">Total<br />Dedn.</th>
                 <th rowSpan="2">Avg.</th>
-                <th rowSpan="2">Other<br/>Dedn.</th>
-                <th rowSpan="2">Final<br/>Scores</th>
+                <th rowSpan="2">Other<br />Dedn.</th>
+                <th rowSpan="2">Final<br />Scores</th>
                 <th rowSpan="2">Remarks</th>
               </tr>
               <tr>
@@ -92,9 +130,45 @@ function ScoreSheet() {
                   <td>{pageIndex * 8 + i + 1}</td>
                   <td className="name font-2xl">{p.name}</td>
                   {/* remaining 15 cells */}
-                  {Array.from({ length: 15 }).map((_, j) => (
+                  {/* {Array.from({ length: 15 }).map((_, j) => (
                     <td key={j}></td>
-                  ))}
+                  ))} */}
+
+                  {(() => {
+                    const score = scoreSheetData.find(
+                      (s) => String(s.playerId) === String(p.id)
+                    );
+
+                    const formatScore = (value) => {
+                      if (value == null || value === "") return "";
+                      const number = Number(value);
+                      return Number.isFinite(number) ? number.toFixed(2) : value;
+                    };
+
+                    const values = [
+                      score?.d1d2,
+                      score?.eJuryOutOf,
+                      score?.startValue,
+                      score?.e1,
+                      score?.e2,
+                      score?.e3,
+                      score?.e4,
+                      score?.e5,
+                      score?.e6,
+                      score?.e7,
+                      formatScore(score?.totalDeduction),
+                      formatScore(score?.avg),
+                      score?.otherDeduction,
+                      score?.totalScore,
+                      "",
+                    ];
+
+                    return values.map((value, j) => (
+                      <td key={j}>
+                        {isScoresMode ? value ?? "" : ""}
+                      </td>
+                    ));
+                  })()}
                 </tr>
               ))}
 
@@ -109,11 +183,11 @@ function ScoreSheet() {
           </table>
 
           {/* FOOTER */}
-        <div className="footer">
+          <div className="footer">
             {/* E JURY */}
             <div className="footer-ejury">
-                <div className="footer-title">E Jury</div>
-                <div className="ejury-grid">
+              <div className="footer-title">E Jury</div>
+              <div className="ejury-grid">
                 <span>E1</span>
                 <span>E3</span>
                 <span>E5</span>
@@ -121,23 +195,23 @@ function ScoreSheet() {
                 <span>E4</span>
                 <span>E6</span>
                 <span>E7</span>
-                </div>
+              </div>
             </div>
 
             {/* D JURY */}
             <div className="footer-djury">
-                <div className="footer-title">D Jury</div>
-                <div className="djury-grid">
+              <div className="footer-title">D Jury</div>
+              <div className="djury-grid">
                 <span>D1</span>
                 <span>D2</span>
-                </div>
+              </div>
             </div>
 
             {/* SECRETARY */}
             <div className="footer-secretary">
-                Secretary
+              Secretary
             </div>
-            </div>
+          </div>
 
           {pageIndex < pages.length - 1 && <div className="page-break" />}
         </div>

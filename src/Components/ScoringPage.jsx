@@ -39,6 +39,8 @@ function ScoringPage() {
     "Uneven_Bars",
   ];
 
+  
+
   /* ---------------- FETCH PLAYERS ---------------- */
   useEffect(() => {
     const fetchPlayers = async () => {

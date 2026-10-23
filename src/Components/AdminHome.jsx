@@ -147,11 +147,47 @@ function AdminHome() {
     fetchBaseData();
   };
 
+  // /* ================= PRINT ================= */
+  // const submitPrint = () => {
+  //   if (!printForm.ageGroup || !printForm.type) return;
+  //   navigate(`/scoresheet/${printForm.ageGroup}/${printForm.type}/${printForm.apparatus}`);
+  // };
+
+
   /* ================= PRINT ================= */
-  const submitPrint = () => {
-    if (!printForm.ageGroup || !printForm.type) return;
-    navigate(`/scoresheet/${printForm.ageGroup}/${printForm.type}/${printForm.apparatus}`);
+
+  // Option 1: Blank sheet — no category selections needed
+  const submitBlankPrint = () => {
+    navigate("/scoresheet/blank/blank/blank?blank=true");
   };
+
+  // Validate selections for options 2 and 3
+  const validatePrintSelection = () => {
+    if (!printForm.ageGroup || !printForm.type || !printForm.apparatus.trim()) {
+      alert("Please select age group, type, and apparatus.");
+      return false;
+    }
+    return true;
+  };
+
+  // Option 2: Names only
+  const submitNamesPrint = () => {
+    if (!validatePrintSelection()) return;
+
+    navigate(
+      `/scoresheet/${printForm.ageGroup}/${printForm.type}/${encodeURIComponent(printForm.apparatus)}?mode=names`
+    );
+  };
+
+  // Option 3: Names and saved scores
+  const submitScoresPrint = () => {
+    if (!validatePrintSelection()) return;
+
+    navigate(
+      `/scoresheet/${printForm.ageGroup}/${printForm.type}/${encodeURIComponent(printForm.apparatus)}?mode=scores`
+    );
+  };
+
 
   const handleConsolidatedPrint = () => {
     navigate(`/consolidatedsheet/${ageGroupForConsolidated}/${typeForConsolidated}`);
@@ -213,35 +249,187 @@ function AdminHome() {
         </Modal>
       )}
 
+
       {/* ================= PRINT MODAL ================= */}
       {printPopOpen && (
-        <Modal onClose={() => setPrintPopOpen(false)}>
-          <h2 className="modal-title">Print Chair of Jury Sheet</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-5">
+          <div className="relative flex max-h-[92vh] w-full max-w-xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
 
-          <Select
-            value={printForm.ageGroup}
-            onChange={e => setPrintForm({ ...printForm, ageGroup: e.target.value })}
-          >
-            <option value="">Select Age Group</option>
-            {LOCAL_AGE_GROUPS.map(a => (
-              <option key={a} value={a}>{a}</option>
-            ))}
-          </Select>
+            {/* FIXED HEADER */}
+            <div className="flex items-center justify-between border-b px-5 py-4 sm:px-6">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+                  Print Chair of Jury Sheet
+                </h2>
+                <p className="mt-1 text-xs text-gray-500 sm:text-sm">
+                  Choose a sheet format to print
+                </p>
+              </div>
 
-          <Select
-            value={printForm.type}
-            onChange={e => setPrintForm({ ...printForm, type: e.target.value })}
-          >
-            <option value="MAG">MAG</option>
-            <option value="WAG">WAG</option>
-          </Select>
+              <button
+                type="button"
+                onClick={() => setPrintPopOpen(false)}
+                className="ml-3 rounded-lg px-3 py-2 text-xl text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+                aria-label="Close print modal"
+              >
+                ✕
+              </button>
+            </div>
 
-          <input type="text" placeholder="Apparatus" value={printForm.apparatus} onChange={e => setPrintForm({ ...printForm, apparatus: e.target.value })} />
+            {/* SCROLLABLE CONTENT */}
+            <div className="overflow-y-auto p-4 sm:p-6">
 
-          <button onClick={submitPrint} className="primary-btn">
-            🖨️ Print
-          </button>
-        </Modal>
+              {/* OPTION 1 */}
+              <button
+                type="button"
+                onClick={submitBlankPrint}
+                className="mb-4 flex w-full items-center gap-4 rounded-xl border border-gray-200 p-4 text-left transition hover:border-blue-400 hover:bg-blue-50"
+              >
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-2xl">
+                  📄
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-gray-900">
+                    1. Blank Jury Sheet
+                  </div>
+                  <p className="mt-1 text-sm text-gray-600">
+                    Eight empty rows, without player names or category details.
+                  </p>
+                </div>
+                <span className="shrink-0 text-sm font-semibold text-blue-700">
+                  Print →
+                </span>
+              </button>
+
+              {/* CATEGORY SELECTION */}
+              <div className="mb-4 rounded-xl border border-gray-200 p-4 sm:p-5">
+                <h3 className="font-semibold text-gray-900">
+                  Category Details
+                </h3>
+                <p className="mb-4 mt-1 text-sm text-gray-500">
+                  Select the same category for either of the next two options.
+                </p>
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">
+                      Age Group
+                    </label>
+                    <Select
+                      value={printForm.ageGroup}
+                      onChange={(e) =>
+                        setPrintForm({
+                          ...printForm,
+                          ageGroup: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="">Select age group</option>
+                      {LOCAL_AGE_GROUPS.map((a) => (
+                        <option key={a} value={a}>
+                          {a}
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">
+                      Category
+                    </label>
+                    <Select
+                      value={printForm.type}
+                      onChange={(e) =>
+                        setPrintForm({
+                          ...printForm,
+                          type: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="MAG">MAG — Boys</option>
+                      <option value="WAG">WAG — Girls</option>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                    Apparatus
+                  </label>
+                  <Input
+                    placeholder="e.g. Floor_Exercise"
+                    value={printForm.apparatus}
+                    onChange={(e) =>
+                      setPrintForm({
+                        ...printForm,
+                        apparatus: e.target.value,
+                      })
+                    }
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Use the exact apparatus name expected by the scoring system.
+                  </p>
+                </div>
+              </div>
+
+              {/* OPTION 2 */}
+              <button
+                type="button"
+                onClick={submitNamesPrint}
+                className="mb-4 flex w-full items-center gap-4 rounded-xl border border-indigo-200 p-4 text-left transition hover:bg-indigo-50"
+              >
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-2xl">
+                  📝
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-gray-900">
+                    2. Names Only
+                  </div>
+                  <p className="mt-1 text-sm text-gray-600">
+                    Player names and category details, with empty score cells.
+                  </p>
+                </div>
+                <span className="shrink-0 text-sm font-semibold text-indigo-700">
+                  Print →
+                </span>
+              </button>
+
+              {/* OPTION 3 */}
+              <button
+                type="button"
+                onClick={submitScoresPrint}
+                className="flex w-full items-center gap-4 rounded-xl border border-emerald-200 p-4 text-left transition hover:bg-emerald-50"
+              >
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-2xl">
+                  📊
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-gray-900">
+                    3. Names with Scores
+                  </div>
+                  <p className="mt-1 text-sm text-gray-600">
+                    Player names, D1/D2, E-jury values, deductions, averages,
+                    and final scores.
+                  </p>
+                </div>
+                <span className="shrink-0 text-sm font-semibold text-emerald-700">
+                  Print →
+                </span>
+              </button>
+            </div>
+
+            {/* FIXED FOOTER */}
+            <div className="border-t bg-gray-50 px-5 py-3 text-right sm:px-6">
+              <button
+                type="button"
+                onClick={() => setPrintPopOpen(false)}
+                className="rounded-lg border border-gray-300 bg-white px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* ================= ADD MODAL ================= */}
