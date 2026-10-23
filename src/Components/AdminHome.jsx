@@ -189,9 +189,31 @@ function AdminHome() {
   };
 
 
+  const validateConsolidatedSelection = () => {
+    if (!ageGroupForConsolidated || !typeForConsolidated) {
+      alert("Please select age group and category.");
+      return false;
+    }
+    return true;
+  };
+
+  // Option 1: Blank consolidated sheet
+  const handleBlankConsolidatedPrint = () => {
+    if (!validateConsolidatedSelection()) return;
+
+    navigate(
+      `/consolidatedsheet/${ageGroupForConsolidated}/${typeForConsolidated}?blank=true`
+    );
+  };
+
+  // Option 2: Consolidated sheet with scores
   const handleConsolidatedPrint = () => {
-    navigate(`/consolidatedsheet/${ageGroupForConsolidated}/${typeForConsolidated}`);
-  }
+    if (!validateConsolidatedSelection()) return;
+
+    navigate(
+      `/consolidatedsheet/${ageGroupForConsolidated}/${typeForConsolidated}`
+    );
+  };
 
   const navigateToScoringPage = (ageGroup, type) => {
     navigate(`/scoring/${ageGroup}/${type}`);
@@ -501,27 +523,96 @@ function AdminHome() {
           )}
         </Modal>
       )}
-      {
-        consolidatedSheetPopup && (
-          <Modal onClose={() => setConsolidatedSheetPopup(false)}>
-            <h2 className="modal-title">Consolidated Sheet Print</h2>
-            <select onChange={(e) => setAgeGroupForConsolidated(e.target.value)} value={ageGroupForConsolidated}>
-              <option value="" disabled>Select Age Group</option>
-              {LOCAL_AGE_GROUPS.map(ageGroup => (
-                <option key={ageGroup} value={ageGroup}>{ageGroup}</option>
-              ))}
-            </select>
-            <select onChange={(e) => setTypeForConsolidated(e.target.value)} value={typeForConsolidated}>
-              <option value="">Select Type</option>
-              <option value="MAG">MAG</option>
-              <option value="WAG">WAG</option>
-            </select>
-            <button onClick={handleConsolidatedPrint} className="primary-btn">
-              🖨️ Print
-            </button>
-          </Modal>
-        )
-      }
+
+
+      ```jsx
+      {consolidatedSheetPopup && (
+        <Modal onClose={() => setConsolidatedSheetPopup(false)}>
+          <h2 className="modal-title">Consolidated Sheet Print</h2>
+
+          <p className="mb-3 text-sm text-gray-600">
+            Select the age group and category, then choose the sheet format.
+          </p>
+
+          {/* CATEGORY SELECTION */}
+          <label className="block text-sm font-medium mb-1">
+            Age Group
+          </label>
+          <Select
+            value={ageGroupForConsolidated}
+            onChange={(e) => setAgeGroupForConsolidated(e.target.value)}
+          >
+            <option value="">Select Age Group</option>
+            {LOCAL_AGE_GROUPS.map((ageGroup) => (
+              <option key={ageGroup} value={ageGroup}>
+                {ageGroup}
+              </option>
+            ))}
+          </Select>
+
+          <label className="block text-sm font-medium mb-1">
+            Category
+          </label>
+          <Select
+            value={typeForConsolidated}
+            onChange={(e) => setTypeForConsolidated(e.target.value)}
+          >
+            <option value="">Select Category</option>
+            <option value="MAG">MAG — Boys</option>
+            <option value="WAG">WAG — Girls</option>
+          </Select>
+
+          {/* OPTION 1: BLANK SHEET */}
+          <button
+            type="button"
+            onClick={handleBlankConsolidatedPrint}
+            className="mt-3 mb-3 flex w-full items-center gap-3 rounded-xl border border-gray-200 p-4 text-left transition hover:border-blue-400 hover:bg-blue-50"
+          >
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-2xl">
+              📄
+            </div>
+
+            <div className="flex-1">
+              <div className="font-semibold text-gray-900">
+                1. Blank Consolidated Sheet
+              </div>
+              <p className="mt-1 text-sm text-gray-600">
+                Empty gymnast rows with apparatus columns, total, and rank.
+              </p>
+            </div>
+
+            <span className="text-sm font-semibold text-blue-700">
+              Print →
+            </span>
+          </button>
+
+          {/* OPTION 2: SHEET WITH SCORES */}
+          <button
+            type="button"
+            onClick={handleConsolidatedPrint}
+            className="flex w-full items-center gap-3 rounded-xl border border-emerald-200 p-4 text-left transition hover:bg-emerald-50"
+          >
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-2xl">
+              📊
+            </div>
+
+            <div className="flex-1">
+              <div className="font-semibold text-gray-900">
+                2. Consolidated Sheet with Scores
+              </div>
+              <p className="mt-1 text-sm text-gray-600">
+                Print gymnast names, apparatus scores, totals, and rankings.
+              </p>
+            </div>
+
+            <span className="text-sm font-semibold text-emerald-700">
+              Print →
+            </span>
+          </button>
+        </Modal>
+      )}
+
+
       {/* ================= EDIT MODAL ================= */}
       {editPlayerPopOpen && (
         <Modal onClose={() => { setEditPlayerPopOpen(false); setSelectedPlayer(null); }}>
