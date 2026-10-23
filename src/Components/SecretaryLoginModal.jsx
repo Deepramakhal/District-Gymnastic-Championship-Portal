@@ -236,7 +236,7 @@ export default function SecretaryLoginModal({ onClose, onSuccess }) {
                 maxLength={128}
                 value={newPassword}
                 onChange={(event) => setNewPassword(event.target.value)}
-                placeholder="At least 12 characters"
+                placeholder="Enter a new password"
                 className="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
               />
             </div>
