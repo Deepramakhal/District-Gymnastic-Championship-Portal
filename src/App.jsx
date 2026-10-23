@@ -7,6 +7,7 @@ import ConsolidatedResults from "./Components/ConsolidatedResults.jsx";
 import NotFound from "./Components/NotFound.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import ConsolidatedSheet from "./Components/ConsolidatedSheet.jsx";
+import SecretaryScoringPage from "./Components/SecretaryScoringPage.jsx";
 
 const App = () => {
   return (
@@ -23,6 +24,12 @@ const App = () => {
           element={<ConsolidatedResults />}
         />
 
+        {/* Secretary routes authenticate using the HttpOnly secretary session cookie. */}
+        <Route path="/secretary" element={<SecretaryScoringPage />} />
+        <Route
+          path="/secretary/scoring/:ageGroup/:type"
+          element={<SecretaryScoringPage />}
+        />
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<AdminHome />} />
